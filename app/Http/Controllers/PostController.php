@@ -58,6 +58,7 @@ public function store(Request $request)
 {
     try {
 
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
@@ -69,8 +70,6 @@ public function store(Request $request)
 
         $user = auth('sanctum')->user();
 
-
-
         $post = Post::create([
             'title' => $validated['title'],
             'content' => $validated['content'],
@@ -80,8 +79,6 @@ public function store(Request $request)
 
         ]);
 
-
-      
         $tagIds = array_unique(array_merge(
             $validated['tag_ids'] ?? [],
             [1]
@@ -90,7 +87,7 @@ public function store(Request $request)
 
         return response()->json([
             'message' => 'Post created successfully',
-            'post' => $post->load(['tags', 'categories', 'creator']),
+            'post' => $post->load(['tags', 'category', 'creator']),
         ], 201);
 
     } catch (\Throwable $e) {
@@ -107,7 +104,7 @@ public function update(Request $request, $post_id)
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'slug' => 'required|string|unique:posts,slug',
+            'slug' => 'required|string|unique:posts,slug,'.$post_id,
             'tag_ids' => 'array',
             'tag_ids.*' => 'integer|exists:tags,id',
             'category_id' => 'integer|exists:categories,id',
@@ -143,7 +140,7 @@ public function update(Request $request, $post_id)
 
         return response()->json([
             'message' => 'Post updated successfully',
-            'post' => $post->load(['tags', 'categories', 'creator']),
+            'post' => $post->load(['tags', 'category', 'creator']),
         ]);
 
     } catch (\Throwable $e) {
@@ -166,12 +163,12 @@ public function delete($post_id)
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
+        //delete all comments of the post
         Comment::where('post_id', $post->id)->delete();
 
 
-        // Detach related tags and categories
+        // Detach related tags
         $post->tags()->detach();
-        $post->categories()->detach();
 
         // Delete the post 
         $post->delete();
