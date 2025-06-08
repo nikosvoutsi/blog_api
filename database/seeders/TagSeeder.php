@@ -10,6 +10,8 @@ class TagSeeder extends Seeder
     public function run(): void
     {
         $tags = [
+            'new',
+            'edited',
             'gadgets',
             'mobile'
         ];
