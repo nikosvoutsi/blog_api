@@ -1,0 +1,44 @@
+Design Decisions
+
+1.  Database Schema
+
+    Posts, Categories, Tags, Comments, and Users represent the main entities.
+
+    Posts have many-to-many relationships with Tags and Categories.
+
+    Categories support a self-referential relationship allowing nested parent categories.
+
+    Users can create posts and comments, with ownership enforced at the API level.
+
+    Comments belong to Posts and Users.
+
+2. API Design
+
+    Followed RESTful API best practices: clear resource-oriented endpoints, HTTP verbs semantics, and proper status codes.
+
+    Ensured authorization checks so users can only update/delete their own posts/comments.
+
+3. Business Logic
+
+    Posts automatically get a "new" tag on creation.
+
+    Posts get an "edited" tag when their title or content changes.
+
+    When a post is deleted, all related comments are also deleted to maintain referential integrity.
+
+    Comments trigger email notifications to post authors using Laravel’s mail system.
+
+4. Error Handling and Validation
+
+    Utilized Laravel’s request validation to ensure clean, consistent data inputs.
+
+    Used try-catch blocks and meaningful HTTP status codes (e.g., 404 for not found, 403 for unauthorized).
+
+    Returned structured JSON responses with error messages for client clarity.
+
+5. Seeding and Testing
+
+    Seeders were created for Categories and Tags to provide initial data.
+
+    Database migrations keep schema manageable and version-controlled.
+
