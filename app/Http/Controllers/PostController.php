@@ -122,7 +122,7 @@ public function update(Request $request, $post_id)
             'title' => $validated['title'],
             'content' => $validated['content'],
             'slug' => $validated['slug'],
-            'category_id' => $user->category_id,
+            'category_id' => $validated['category_id'],
         ]);
 
         $postChanged = $post->isDirty(['title', 'content']);
