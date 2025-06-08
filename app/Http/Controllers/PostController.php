@@ -163,6 +163,7 @@ public function delete($post_id)
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
+        //delete all comments of the post
         Comment::where('post_id', $post->id)->delete();
 
 
